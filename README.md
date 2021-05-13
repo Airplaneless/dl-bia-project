@@ -3,6 +3,8 @@
 We use small subset of fastMRI singlecoil knee dataset.
 Dataset consist only from PD, 3T scans and slices selected only at center of knee (dataset without slices on knee borders)
 
+[Link to dataset (4 Gb)](https://drive.google.com/file/d/1y78Ad6WwQpMGtxfEZlp97A0iV98kAiJN/view?usp=sharing)
+
 # **Models**
 
 **Unet16**
