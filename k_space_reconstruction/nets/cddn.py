@@ -34,16 +34,24 @@ class CDDNwTDC(nn.Module):
     def __init__(self, in_channels, n_filters, n_cascades):
         super().__init__()
         self.n_cascades = n_cascades
-        self.cascades = nn.ModuleList(
-            [DAMModule(in_channels, n_filters), TDCModule()] * n_cascades
-        )
+        self.cascades = nn.ModuleList([CDDNBlock(in_channels, n_filters) for _ in range(n_cascades)])
 
     def forward(self, k, m, x, mean, std):
-        for module in self.cascades:
-            if type(module) == DAMModule:
-                x = module(x)
-            elif type(module) == TDCModule:
-                x = module(k, m, x, mean, std)
+        for cascade in self.cascades:
+            x = cascade(k, m, x, mean, std)
+        return x
+
+
+class CDDNBlock(nn.Module):
+
+    def __init__(self, in_channels, n_filters):
+        super().__init__()
+        self.dam = DAMModule(in_channels, n_filters)
+        self.tdc = TDCModule()
+
+    def forward(self, k, m, x, mean, std):
+        x = self.dam(x)
+        x = self.tdc(k, m, x, mean, std)
         return x
 
 
@@ -205,7 +213,7 @@ if __name__ == '__main__':
     mean = torch.rand(2, 1, 1, 1)
     std = torch.rand(2, 1, 1, 1)
 
-    net = CDDNwTDC(1, 16, 5)
+    net = CDDNwTDC(1, 8, 5)
     print(net(k, m, x, mean, std).shape)
 
     from torchsummary import summary
