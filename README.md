@@ -11,7 +11,7 @@ Dataset consist only from PD, 3T scans and slices selected only at center of kne
 
 | noise       | SSIM   | NMSE   | PSNR    |
 |-------------|--------|--------|---------|
-| [none](https://drive.google.com/file/d/1vBB8AqD_KJAnaf5vJpYNWNq02KWtoW2O/view?usp=sharing)        | 0.7963 | 0.0108 | 31.4571 |
+| [none](https://drive.google.com/file/d/1vBB8AqD_KJAnaf5vJpYNWNq02KWtoW2O/view?usp=sharing)        | 0.8009 | 0.0103 | 31.7120 |
 | gaussian    | -      | -      | -       |
 | poisson     | -      | -      | -       |
 | salt&pepper | -      | -      | -       |
