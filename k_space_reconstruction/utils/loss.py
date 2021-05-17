@@ -3,7 +3,16 @@ import torch
 import torch.nn.functional as F
 from torch.optim.optimizer import Optimizer
 # from k_space_reconstruction.utils.metrics import pt_ssim, pt_msssim, ssim
-from pytorch_msssim import ssim
+try:
+    from pytorch_msssim import ssim
+except ImportError:
+    import subprocess
+    import sys
+
+    PACKAGES_TO_INSTALL = ["pytorch-msssim",]
+    subprocess.check_call([sys.executable, "-m", "pip", "install"] + PACKAGES_TO_INSTALL)
+    from pytorch_msssim import ssim
+
 
 def l1_loss(pred: torch.Tensor, gt: torch.Tensor, mean: torch.Tensor, std: torch.Tensor):
     return F.l1_loss(pred, gt)
