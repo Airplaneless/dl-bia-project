@@ -50,8 +50,7 @@ class FastMRITransformC(object):
         elif self.noise_type == 'normal_and_salt':
             normal_noise_lvl = 400
             salt_noise_lvl = 5e4
-            ks_mean = ks.mean() 
-            
+            ks_mean = ks.mean()
             # Add Gaussian
             ks = ks + np.random.normal(size=(ks.shape[0], ks.shape[1])) * ks_mean * normal_noise_lvl
             # Add Salt
@@ -120,6 +119,19 @@ class FastMRITransform(object):
             ks = ks.flatten()
             i = np.random.randint(low=0, high=shape[0] * shape[1], size=10)
             ks[i] = ks.mean() * self.noise_level
+            ks = ks.reshape(shape)
+            return ks
+        elif self.noise_type == 'normal_and_salt':
+            normal_noise_lvl = 400
+            salt_noise_lvl = 5e4
+            ks_mean = ks.mean()
+            # Add Gaussian
+            ks = ks + np.random.normal(size=(ks.shape[0], ks.shape[1])) * ks_mean * normal_noise_lvl
+            # Add Salt
+            shape = ks.shape
+            ks = ks.flatten()
+            i = np.random.randint(low=0, high=shape[0] * shape[1], size=10)
+            ks[i] = ks_mean * salt_noise_lvl
             ks = ks.reshape(shape)
             return ks
 
