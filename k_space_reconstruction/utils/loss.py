@@ -2,15 +2,18 @@ import math
 import torch
 import torch.nn.functional as F
 from torch.optim.optimizer import Optimizer
-from k_space_reconstruction.utils.metrics import pt_ssim, pt_msssim
-
+# from k_space_reconstruction.utils.metrics import pt_ssim, pt_msssim, ssim
+from pytorch_msssim import ssim
 
 def l1_loss(pred: torch.Tensor, gt: torch.Tensor, mean: torch.Tensor, std: torch.Tensor):
     return F.l1_loss(pred, gt)
 
 
 def compund_mssim_l1_loss(pred: torch.Tensor, gt: torch.Tensor, mean: torch.Tensor, std: torch.Tensor):
-    return (1 - 0.84) * F.l1_loss(pred, gt) + 0.84 * (1 - pt_msssim(pred, gt, val_range=(gt.max() - gt.min())))
+    # return (1 - 0.84) * F.l1_loss(pred, gt) + 0.84 * (1 - pt_msssim(pred, gt, val_range=(gt.max() - gt.min())))
+    # https://pypi.org/project/pytorch-msssim/
+    f1 = F.l1_loss(pred, gt)
+    return (1 - 0.84) * f1 + 0.84 * (1 - ssim(gt, pred, size_average=True, nonnegative_ssim=True))
 
 
 class RAdam(Optimizer):

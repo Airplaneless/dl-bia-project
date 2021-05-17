@@ -69,6 +69,8 @@ class BaseReconstructionModule(pl.LightningModule):
         ks, mask, y, x, mean, std, f_name, slice_id, max_val = batch
         yp = self.predict(batch)
         loss = self.criterion(yp, y, mean, std)
+        if torch.isnan(loss):
+            print('warn')
         self.log('train_loss_step', loss.detach(), sync_dist=True)
         return loss
 
@@ -167,6 +169,7 @@ class BaseReconstructionModule(pl.LightningModule):
         )
 
         self.log('val_loss', val_loss / tot_slice_examples, prog_bar=True, sync_dist=True)
+        # print(val_loss / tot_slice_examples)
         for metric, value in metrics.items():
             self.log(metric, value / tot_examples, sync_dist=True)
 

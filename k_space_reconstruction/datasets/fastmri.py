@@ -44,6 +44,25 @@ class FastMRITransformC(object):
             ks[i] = ks.mean() * self.noise_level
             ks = ks.reshape(shape)
             return ks
+        #----------Gaussain+Salt-Noises-------------------
+        # Noise lvls are hardcoded
+      
+        elif self.noise_type == 'normal_and_salt':
+            normal_noise_lvl = 400
+            salt_noise_lvl = 5e4
+            ks_mean = ks.mean() 
+            
+            # Add Gaussian
+            ks = ks + np.random.normal(size=(ks.shape[0], ks.shape[1])) * ks_mean * normal_noise_lvl
+            # Add Salt
+            shape = ks.shape
+            ks = ks.flatten()
+            i = np.random.randint(low=0, high=shape[0] * shape[1], size=10)
+            ks[i] = ks_mean * salt_noise_lvl
+            ks = ks.reshape(shape)
+            return ks
+        
+        #-------------------------------------------------
 
     def __call__(self, f_name: str, slice_id: str, k_space: np.ndarray, max_val: float):
         recon = kspace2spatial(k_space)
