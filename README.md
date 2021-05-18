@@ -20,7 +20,7 @@ Dataset consist only from PD, 3T scans and slices selected only at center of kne
 
 | noise       | SSIM   | NMSE   | PSNR    |
 |-------------|--------|--------|---------|
-| [none*](https://drive.google.com/file/d/1qTMPzKjURdse352d0bKWPQuh5f2Y53-V/view?usp=sharing)        | 0.8308 | 0.0083 | 32.6528 |
+| [none](https://drive.google.com/file/d/1qTMPzKjURdse352d0bKWPQuh5f2Y53-V/view?usp=sharing)        | 0.8444 | 0.0069 | 33.4667 |
 | gaussian    | -      | -      | -       |
 | poisson     | -      | -      | -       |
 | salt&pepper | -      | -      | -       |
@@ -38,7 +38,7 @@ Dataset consist only from PD, 3T scans and slices selected only at center of kne
 
 | noise       | SSIM   | NMSE   | PSNR    |
 |-------------|--------|--------|---------|
-| [none*](https://drive.google.com/file/d/1sW2ZOBf26UkViBRBpUDesHPxlILUaoiS/view?usp=sharing)        | 0.8341 | 0.0079 | 32.9552 |
+| [none](https://drive.google.com/file/d/1sW2ZOBf26UkViBRBpUDesHPxlILUaoiS/view?usp=sharing)        | 0.8394 | 0.0072 | 33.2991 |
 | gaussian    | -      | -      | -       |
 | poisson     | -      | -      | -       |
 | salt&pepper | -      | -      | -       |
