@@ -19,9 +19,9 @@ print('Available GPUs: ', torch.cuda.device_count())
 torch.manual_seed(42)
 np.random.seed(42)
 
-path = '' #<------------------------Path-to-the-cascade-wegihts----------------------
-batch_size = 64
-accum_val = 2
+path = 'cascade-x5-dncnn-dc-noiseless.pth' #<------------------------Path-to-the-cascade-wegihts----------------------
+batch_size = 8
+accum_val = 16
 
 model_kwargs = dict(
     dncnn_chans=64,
@@ -29,9 +29,9 @@ model_kwargs = dict(
     criterion=compund_mssim_l1_loss,
     verbose_batch=50,
     optimizer='Adam',
-    lr=1e-4,
+    lr=1e-3,
     lr_step_size=3,
-    lr_gamma=0.2,
+    lr_gamma=1.0,
     weight_decay=0.0
 )
 
@@ -39,7 +39,7 @@ cascade = CascadeModule(net=torch.nn.ModuleList([DnCNNDCModule(**model_kwargs).n
 def get_trainer():
     return pl.Trainer(
         gpus=1, max_epochs=1,
-        accumulate_grad_batches=32,
+        accumulate_grad_batches=accum_val,
         terminate_on_nan=True,
         default_root_dir='logs/CascadeDnCNN',
         callbacks=[
@@ -66,13 +66,12 @@ val_dataset = FastMRIh5Dataset('small_fastmri_pd_3t/val.h5', transform)
 train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, num_workers=12, shuffle = True)
 val_generator = torch.utils.data.DataLoader(val_dataset, batch_size=1, num_workers=12, shuffle = True)
 
-cascade = CascadeModule\
-.load_from_checkpoint(path, #<-----path-here
-                      net=torch.nn.ModuleList([DnCNNDCModule(**model_kwargs).net for _ in range(5)]))
+cascade = CascadeModule(net=torch.nn.ModuleList([DnCNNDCModule(**model_kwargs).net for _ in range(5)]), **model_kwargs)
+cascade.net.load_state_dict(torch.load(path))
 
 trainer = pl.Trainer(
-    gpus=1, max_epochs=3,
-    accumulate_grad_batches=32,
+    gpus=1, max_epochs=20,
+    accumulate_grad_batches=accum_val,
     terminate_on_nan=True,
     default_root_dir='logs/CascadeDnCNN_gaussian',
     callbacks=[
@@ -106,13 +105,12 @@ val_dataset = FastMRIh5Dataset('small_fastmri_pd_3t/val.h5', transform)
 train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, num_workers=12, shuffle = True)
 val_generator = torch.utils.data.DataLoader(val_dataset, batch_size=1, num_workers=12, shuffle = True)
 
-cascade = CascadeModule\
-.load_from_checkpoint(path, #<-----path-here
-                      net=torch.nn.ModuleList([DnCNNDCModule(**model_kwargs).net for _ in range(5)]))
+cascade = CascadeModule(net=torch.nn.ModuleList([DnCNNDCModule(**model_kwargs).net for _ in range(5)]), **model_kwargs)
+cascade.net.load_state_dict(torch.load(path))
 
 trainer = pl.Trainer(
-    gpus=1, max_epochs=3,
-    accumulate_grad_batches=32,
+    gpus=1, max_epochs=20,
+    accumulate_grad_batches=accum_val,
     terminate_on_nan=True,
     default_root_dir='logs/CascadeDnCNN_salt',
     callbacks=[
@@ -146,13 +144,12 @@ val_dataset = FastMRIh5Dataset('small_fastmri_pd_3t/val.h5', transform)
 train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, num_workers=12, shuffle = True)
 val_generator = torch.utils.data.DataLoader(val_dataset, batch_size=1, num_workers=12, shuffle = True)
 
-cascade = CascadeModule\
-.load_from_checkpoint(path, #<-----path-here
-                      net=torch.nn.ModuleList([DnCNNDCModule(**model_kwargs).net for _ in range(5)]))
+cascade = CascadeModule(net=torch.nn.ModuleList([DnCNNDCModule(**model_kwargs).net for _ in range(5)]), **model_kwargs)
+cascade.net.load_state_dict(torch.load(path))
 
 trainer = pl.Trainer(
-    gpus=1, max_epochs=3,
-    accumulate_grad_batches=32,
+    gpus=1, max_epochs=20,
+    accumulate_grad_batches=accum_val,
     terminate_on_nan=True,
     default_root_dir='logs/CascadeDnCNN_salt_normal_and_salt',
     callbacks=[
