@@ -4,6 +4,11 @@ We use small subset of fastMRI singlecoil knee dataset.
 Dataset consist only from PD, 3T scans and slices selected only at center of knee (dataset without slices on knee borders)
 
 [Link to dataset (4 Gb)](https://drive.google.com/file/d/1y78Ad6WwQpMGtxfEZlp97A0iV98kAiJN/view?usp=sharing)
+You should have h5py > 3.2 and gdown > 3.12, you can update like that:
+
+`python -m pip install gdown==3.12.2`
+
+`python -m pip install h5py==3.2.1`
 
 # **Models**
 
