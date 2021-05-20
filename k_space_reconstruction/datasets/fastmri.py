@@ -122,7 +122,7 @@ class FastMRITransform(object):
             ks = ks.reshape(shape)
             return ks
         elif self.noise_type == 'normal_and_salt':
-            normal_noise_lvl = 400
+            normal_noise_lvl = 100
             salt_noise_lvl = 5e4
             ks_mean = ks.mean()
             # Add Gaussian

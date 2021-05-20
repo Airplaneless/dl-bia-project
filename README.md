@@ -10,6 +10,40 @@ You should have h5py > 3.2 and gdown > 3.12, you can update like that:
 
 `python -m pip install h5py==3.2.1`
 
+# **Noise transform**
+
+**Gaussian**
+```
+from k_space_reconstruction.datasets.fastmri import FastMRITransform, RandomMaskFunc
+
+transform = FastMRITransform(
+    RandomMaskFunc([0.08], [4]),
+    noise_level=100,
+    noise_type='normal'
+)
+```
+
+**Salt**
+```
+from k_space_reconstruction.datasets.fastmri import FastMRITransform, RandomMaskFunc
+
+transform = FastMRITransform(
+    RandomMaskFunc([0.08], [4]),
+    noise_level=5e4,
+    noise_type='salt'
+)
+```
+
+**Gaussian + Salt**
+```
+from k_space_reconstruction.datasets.fastmri import FastMRITransform, RandomMaskFunc
+
+transform = FastMRITransform(
+    RandomMaskFunc([0.08], [4]),
+    noise_type='normal_and_salt'
+)
+```
+
 # **Models**
 
 **Unet16**
