@@ -21,7 +21,7 @@ You should have h5py > 3.2 and gdown > 3.12, you can update like that:
 | poisson     | -      | -      | -       |
 | salt&pepper | -      | -      | -       |
 
-**Cascade-5x-Unet16**
+**Cascade-5x-Unet16-DC**
 
 | noise       | SSIM   | NMSE   | PSNR    |
 |-------------|--------|--------|---------|
@@ -39,7 +39,7 @@ You should have h5py > 3.2 and gdown > 3.12, you can update like that:
 | [salt&pepper](https://drive.google.com/file/d/1paKZwqWPqoRmc3crRtiJ7TQNmQ5F7GqO/view?usp=sharing)     | 0.3955      | 0.0827      | 23.2475       |
 | [gaussian + salt&pepper](https://drive.google.com/file/d/1fsARjj3pvoCNbshdPC14OWEqcilkCZf9/view?usp=sharing) | 0.3467      | 0.1060      | 22.3551       |
 
-**Cascade-5x-DnCNN**
+**Cascade-5x-DnCNN-DC**
 
 | noise       | SSIM   | NMSE   | PSNR    |
 |-------------|--------|--------|---------|
@@ -47,5 +47,14 @@ You should have h5py > 3.2 and gdown > 3.12, you can update like that:
 | [gaussian](https://drive.google.com/file/d/1df7xelNU7QNY9tuqoMjUeePCdpZbW0S1/view?usp=sharing)    | 0.6639      | 0.0182      | 29.5485       |
 | [salt&pepper](https://drive.google.com/file/d/1BYWryHtXWSkRlP1l-frp6z_hRJU-DQjY/view?usp=sharing)     | 0.3112      | 0.2565      | 19.3469       |
 | [gaussian + salt&pepper](https://drive.google.com/file/d/1HRlUVJXR-ps6Cz-t355ODa0FNbqxYxNy/view?usp=sharing) | 0.2022      | 0.5462      | 16.1158       |
+
+**Cascade-5x-DnCNN-DCL**
+
+| noise       | SSIM   | NMSE   | PSNR    |
+|-------------|--------|--------|---------|
+| [none](https://drive.google.com/file/d/1P0cOfqj4CeqtGTZyj0gg_zUi0gEdokTo/view?usp=sharing)        | 0.8325 | 0.0078 | 32.9421 |
+| [gaussian](https://drive.google.com/file/d/1bkfvY6573ZWt752kFiy4NhD6P_B0sUgX/view?usp=sharing)    | 0.7098      | 0.0138      | 30.4711       |
+| [salt&pepper](https://drive.google.com/file/d/1jzMuxcEW2tOgrQ8U8VBVR8nOe8GCUJtq/view?usp=sharing)     | 0.4911      | 0.0420      | 25.9640       |
+| [gaussian + salt&pepper](https://drive.google.com/file/d/1TuPPuht1OwfwJ_9xuikWOjHAY_xt9R8y/view?usp=sharing) | 0.4276      | 0.0693      | 24.4179       |
 
     * - need revision
