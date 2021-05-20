@@ -50,7 +50,7 @@ transform = FastMRITransform(
 
 | noise       | SSIM   | NMSE   | PSNR    |
 |-------------|--------|--------|---------|
-| [none](https://drive.google.com/file/d/1vBB8AqD_KJAnaf5vJpYNWNq02KWtoW2O/view?usp=sharing)        | 0.8009 | 0.0103 | 31.7120 |
+| [none](https://drive.google.com/file/d/113DZqjgACZHdRxC3xRERD5hOMZtaRYI_/view?usp=sharing)        | 0.8053 | 0.0099 | 31.8321 |
 | gaussian    | -      | -      | -       |
 | poisson     | -      | -      | -       |
 | salt&pepper | -      | -      | -       |
@@ -61,8 +61,8 @@ transform = FastMRITransform(
 |-------------|--------|--------|---------|
 | [none](https://drive.google.com/file/d/1qTMPzKjURdse352d0bKWPQuh5f2Y53-V/view?usp=sharing)        | 0.8444 | 0.0069 | 33.4667 |
 | [gaussian](https://drive.google.com/file/d/16LiGoQwz0HdtJ2x084Xrld6lqQIMxqxc/view?usp=sharing)    | 0.6035 | 0.0242 | 28.3150 |
-| poisson     | -      | -      | -       |
 | [salt&pepper](https://drive.google.com/file/d/13HttRoGv_Oh7lpB0qp7HLI8ZL4rDqqoR/view?usp=sharing) | 0.6156 | 0.0262 | 28.2839 |
+| [gaussian + salt&pepper](https://drive.google.com/file/d/1BLTuQywe0lJI6cLfU_35iOEQ131Nzv60/view?usp=sharing)     | 0.5262 | 0.0419 | 26.2551 |
 
 **DnCNN**
 
