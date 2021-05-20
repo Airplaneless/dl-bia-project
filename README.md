@@ -51,7 +51,7 @@ transform = FastMRITransform(
 | noise       | SSIM   | NMSE   | PSNR    |
 |-------------|--------|--------|---------|
 | [none](https://drive.google.com/file/d/113DZqjgACZHdRxC3xRERD5hOMZtaRYI_/view?usp=sharing)        | 0.8053 | 0.0099 | 31.8321 |
-| [gaussian](https://drive.google.com/file/d/1exk6qeientqlq5FVdmTg2NKPgQREXE_D/view?usp=sharing)    | 0.5977 | 0.0420 | 26.0190 |
+| [gaussian](https://drive.google.com/file/d/1S9TMhP2g8UOjOpXggO4dPLGq5FLl84S2/view?usp=sharing)    | 0.7210 | 0.0142 | 30.3041 |
 | [salt&pepper](https://drive.google.com/file/d/1DhFYzpAnX25jQwMe78l_P17yfvcWdXJx/view?usp=sharing)     | 0.6806 | 0.0207 | 28.9547 |
 | [gaussian + salt&pepper*] | -      | -      | -       |
 
