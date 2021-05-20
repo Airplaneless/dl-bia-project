@@ -28,7 +28,7 @@ You should have h5py > 3.2 and gdown > 3.12, you can update like that:
 | [none](https://drive.google.com/file/d/1qTMPzKjURdse352d0bKWPQuh5f2Y53-V/view?usp=sharing)        | 0.8444 | 0.0069 | 33.4667 |
 | [gaussian](https://drive.google.com/file/d/16LiGoQwz0HdtJ2x084Xrld6lqQIMxqxc/view?usp=sharing)    | 0.6035 | 0.0242 | 28.3150 |
 | poisson     | -      | -      | -       |
-| salt&pepper | -      | -      | -       |
+| [salt&pepper](https://drive.google.com/file/d/13HttRoGv_Oh7lpB0qp7HLI8ZL4rDqqoR/view?usp=sharing) | 0.6156 | 0.0262 | 28.2839 |
 
 **DnCNN**
 
