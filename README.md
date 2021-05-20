@@ -51,9 +51,9 @@ transform = FastMRITransform(
 | noise       | SSIM   | NMSE   | PSNR    |
 |-------------|--------|--------|---------|
 | [none](https://drive.google.com/file/d/113DZqjgACZHdRxC3xRERD5hOMZtaRYI_/view?usp=sharing)        | 0.8053 | 0.0099 | 31.8321 |
-| gaussian    | -      | -      | -       |
-| poisson     | -      | -      | -       |
-| salt&pepper | -      | -      | -       |
+| [gaussian](https://drive.google.com/file/d/1exk6qeientqlq5FVdmTg2NKPgQREXE_D/view?usp=sharing)    | 0.5977 | 0.0420 | 26.0190 |
+| [salt&pepper]     | -      | -      | -       |
+| [gaussian + salt&pepper*] | -      | -      | -       |
 
 **Cascade-5x-Unet16-DC**
 
