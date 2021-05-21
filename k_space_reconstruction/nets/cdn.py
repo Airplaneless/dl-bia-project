@@ -79,7 +79,6 @@ class C_CascadeModule(ComplexModule):
     def get_net(self, **kwargs):
         return None
 
-
 class CascadeModule(BaseReconstructionModule):
 
     def __init__(self, net, **kwargs):
@@ -117,8 +116,15 @@ class UnetDCModule(BaseReconstructionModule):
         super(UnetDCModule, self).__init__(**kwargs)
 
     def get_net(self, **kwargs):
-        return UnetCascade(kwargs['unet_chans'], kwargs['unet_num_layers'])
+        return UnetDCCascade(kwargs['unet_chans'], kwargs['unet_num_layers'])
 
+class UnetDCLModule(BaseReconstructionModule):
+
+    def __init__(self, **kwargs):
+        super(UnetDCLModule, self).__init__(**kwargs)
+
+    def get_net(self, **kwargs):
+        return UnetDCLCascade(kwargs['unet_chans'], kwargs['unet_num_layers'])
 
 class MWCCNDCModule(BaseReconstructionModule):
 
@@ -155,7 +161,21 @@ class C_KUnetCascade(torch.nn.Module):
         return x
 
 
-class UnetCascade(torch.nn.Module):
+class UnetDCCascade(torch.nn.Module):
+
+    def __init__(self, n_filters, num_layers):
+        super().__init__()
+        self.cascade = torch.nn.ModuleList([Unet(1, 1, n_filters, num_layers), DataConsistencyModule()])
+
+    def forward(self, k, m, x, mean, std):
+        for module in self.cascade:
+            if (type(module) == DataConsistencyModule):
+                x = module(k, m, x, mean, std)
+            else:
+                x = module(x)
+        return x
+
+class UnetDCLCascade(torch.nn.Module):
 
     def __init__(self, n_filters, num_layers):
         super().__init__()
@@ -163,7 +183,7 @@ class UnetCascade(torch.nn.Module):
 
     def forward(self, k, m, x, mean, std):
         for module in self.cascade:
-            if type(module) == DataConsistencyLLearnableModule:
+            if (type(module) == DataConsistencyLLearnableModule):
                 x = module(k, m, x, mean, std)
             else:
                 x = module(x)
