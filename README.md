@@ -60,10 +60,11 @@ transform = FastMRITransform(
 | noise       | SSIM   | NMSE   | PSNR    |
 |-------------|--------|--------|---------|
 | [none](https://drive.google.com/file/d/1qTMPzKjURdse352d0bKWPQuh5f2Y53-V/view?usp=sharing)        | 0.8444 | 0.0069 | 33.4667 |
-| [gaussian*](https://drive.google.com/file/d/16LiGoQwz0HdtJ2x084Xrld6lqQIMxqxc/view?usp=sharing)    | 0.6035 | 0.0242 | 28.3150 |
+| [gaussian](https://drive.google.com/file/d/16LiGoQwz0HdtJ2x084Xrld6lqQIMxqxc/view?usp=sharing)    | 0.6035 | 0.0242 | 28.3150 |
 | [gaussian_100](https://drive.google.com/file/d/13dvvJA4K00mr9xXhxpT82vhuvjxnjIF1/view?usp=sharing) | 0.7388 | 0.0117 | 31.2349 |
 | [salt&pepper](https://drive.google.com/file/d/13HttRoGv_Oh7lpB0qp7HLI8ZL4rDqqoR/view?usp=sharing) | 0.6156 | 0.0262 | 28.2839 |
-| [gaussian + salt&pepper*](https://drive.google.com/file/d/1BLTuQywe0lJI6cLfU_35iOEQ131Nzv60/view?usp=sharing)     | 0.5262 | 0.0419 | 26.2551 |
+| [gaussian + salt&pepper](https://drive.google.com/file/d/1BLTuQywe0lJI6cLfU_35iOEQ131Nzv60/view?usp=sharing)     | 0.5262 | 0.0419 | 26.2551 |
+| [gaussian_100 + salt&pepper](https://drive.google.com/file/d/1472YeD5lQcbB8fbn5cGP3lXgGB3Maldt/view?usp=sharing)  | 0.5892 | 0.03026 | 27.8198|
 
 **DnCNN**
 
