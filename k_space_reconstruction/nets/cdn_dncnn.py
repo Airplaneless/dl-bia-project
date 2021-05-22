@@ -11,6 +11,7 @@ import pytorch_lightning as pl
 from typing import overload
 
 from k_space_reconstruction.nets.dncnn import DnCNN
+from k_space_reconstruction.nets.unet import Unet
 
 from k_space_reconstruction.utils.kspace import pt_kspace2spatial as FtH
 from k_space_reconstruction.utils.kspace import pt_spatial2kspace as Ft
@@ -84,6 +85,61 @@ class DnCNNCascade(torch.nn.Module):
 
     def forward(self, k, m, x, mean, std):
         for module in self.cascade:
+            if type(module) == DataConsistencyModule:
+                x = module(k, m, x, mean, std)
+            else:
+                x = module(x)
+        return x
+    
+#-----------DnCNN-without-DC-----------------------------------
+
+class PureDnCNNDCModule(BaseReconstructionModule):
+
+    def __init__(self, **kwargs):
+        super(PureDnCNNDCModule, self).__init__(**kwargs)
+
+    def get_net(self, **kwargs):
+        return PureDnCNNCascade(kwargs['dncnn_chans'], kwargs['dncnn_depth'])
+
+class PureDnCNNCascade(torch.nn.Module):
+
+    def __init__(self, n_filters, num_layers): # dncnn_chans, dncnn_depth
+        super().__init__()
+        self.cascade = torch.nn.ModuleList([DnCNN(1, 1, n_filters, num_layers)])
+
+    def forward(self, k, m, x, mean, std):
+        for module in self.cascade:
+            x = module(x)
+#             if type(module) == DataConsistencyModule:
+#                 x = module(k, m, x, mean, std)
+#             else:
+#                 x = module(x)
+        return x
+    
+#------------DnCNN+UNet-----------------------------------------
+class BothDCModule(BaseReconstructionModule):
+
+    def __init__(self, **kwargs):
+        super(BothDCModule, self).__init__(**kwargs)
+
+    def get_net(self, **kwargs):
+        return BothCascade(kwargs['dncnn_chans'], kwargs['dncnn_depth'])
+
+class BothCascade(torch.nn.Module):
+
+    def __init__(self, n_filters, num_layers): # dncnn_chans, dncnn_depth
+        super().__init__()
+        self.cascade = torch.nn.ModuleList([DnCNN(1, 1, n_filters, num_layers), DataConsistencyModule()])
+        self.cascade_2 = torch.nn.ModuleList([Unet(1, 1, n_filters, num_layers), DataConsistencyLLearnableModule()])
+        
+    def forward(self, k, m, x, mean, std):
+        for module in self.cascade:
+            if type(module) == DataConsistencyModule:
+                x = module(k, m, x, mean, std)
+            else:
+                x = module(x)
+                
+        for module in self.cascade_2:
             if type(module) == DataConsistencyModule:
                 x = module(k, m, x, mean, std)
             else:
