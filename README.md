@@ -71,6 +71,7 @@ transform = FastMRITransform(
 |-------------|--------|--------|---------|
 | [none](https://drive.google.com/file/d/13FaJ5itN6OkYoxY_qGy4eyZFwI0YnuL5/view?usp=sharing) | 0.8508 | 0.0064 | 33.8926 |
 | [gaussian](https://drive.google.com/file/d/13oQoujDBUKqoMfVRb-vV0eSsiv5gFGQP/view?usp=sharing) | 0.6747 | 0.01708 | 29.8601|
+| [salt&pepper](https://drive.google.com/file/d/1BdK1YxZZvAOA87_-cSbpEFKK4Km3JGL1/view?usp=sharing) | 0.3387 | 0.2147 | 19.9232|
 
 **DnCNN**
 
