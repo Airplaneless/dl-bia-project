@@ -43,6 +43,7 @@ class CascadeModule(BaseReconstructionModule):
     def get_net(self, **kwargs):
         return None
 
+
 class DnCNNDCModule(BaseReconstructionModule):
 
     def __init__(self, **kwargs):
@@ -50,6 +51,31 @@ class DnCNNDCModule(BaseReconstructionModule):
 
     def get_net(self, **kwargs):
         return DnCNNCascade(kwargs['dncnn_chans'], kwargs['dncnn_depth'])
+
+
+class DnCNNDCLModule(BaseReconstructionModule):
+
+    def __init__(self, **kwargs):
+        super(DnCNNDCLModule, self).__init__(**kwargs)
+
+    def get_net(self, **kwargs):
+        return DnCNNDCLCascade(kwargs['dncnn_chans'], kwargs['dncnn_depth'])
+
+
+class DnCNNDCLCascade(torch.nn.Module):
+
+    def __init__(self, n_filters, num_layers): # dncnn_chans, dncnn_depth
+        super().__init__()
+        self.cascade = torch.nn.ModuleList([DnCNN(1, 1, n_filters, num_layers), DataConsistencyLLearnableModule()])
+
+    def forward(self, k, m, x, mean, std):
+        for module in self.cascade:
+            if type(module) == DataConsistencyLLearnableModule:
+                x = module(k, m, x, mean, std)
+            else:
+                x = module(x)
+        return x
+
 
 class DnCNNCascade(torch.nn.Module):
 

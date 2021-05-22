@@ -116,7 +116,10 @@ class BaseReconstructionModule(pl.LightningModule):
             y = val_logs['target'][i].cpu().numpy()
 
             nmse_vals[fname][slice_id] = torch.tensor(nmse(y, yp)).view(1)
-            ssim_vals[fname][slice_id] = torch.tensor(ssim(y, yp, maxval=maxval)).view(1)
+            try:
+                ssim_vals[fname][slice_id] = torch.tensor(ssim(y, yp, maxval=maxval)).view(1)
+            except:
+                ssim_vals[fname][slice_id] = torch.zeros_like(nmse_vals[fname][slice_id])
             psnr_vals[fname][slice_id] = torch.tensor(psnr(y, yp)).view(1)
         return {
             'val_loss': val_logs['val_loss'],
