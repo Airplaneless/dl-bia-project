@@ -19,10 +19,6 @@ print('Available GPUs: ', torch.cuda.device_count())
 torch.manual_seed(42)
 np.random.seed(42)
 
-path = '' #<------------------------Path-to-the-cascade-wegihts----------------------
-batch_size = 64
-accum_val = 2
-
 model_kwargs = dict(
     dncnn_chans=64,
     dncnn_depth=10,
@@ -36,16 +32,19 @@ model_kwargs = dict(
 )
 
 cascade = CascadeModule(net=torch.nn.ModuleList([PureDnCNNDCModule(**model_kwargs).net]), **model_kwargs)
+cascade.net[0].cascade[0].load_state_dict(torch.load('dncnn-noiseless.pth'))
+
+
 def get_trainer():
     return pl.Trainer(
-        gpus=1, max_epochs=1,
-        accumulate_grad_batches=32,
+        gpus=1, max_epochs=10,
+        accumulate_grad_batches=3,
         terminate_on_nan=True,
         default_root_dir='logs/CascadeDnCNN_pure',
         callbacks=[
             pl.callbacks.ModelCheckpoint(
                 save_last=True,
-                save_top_k=4,
+                save_top_k=7,
                 monitor='val_loss',
                 filename='{epoch}-{ssim:.4f}-{psnr:.4f}-{nmse:.5f}'
             ),
@@ -53,6 +52,74 @@ def get_trainer():
             pl.callbacks.GPUStatsMonitor(temperature=True)
         ]
     )
+#----------------noiseless----------------------
+
+torch.manual_seed(42)
+np.random.seed(42)
+
+transform = FastMRITransform(
+    RandomMaskFunc([0.08], [4]),
+    noise_level=1000,
+    noise_type='none'
+)
+
+train_dataset = FastMRIh5Dataset('small_fastmri_pd_3t/train.h5', transform)
+val_dataset = FastMRIh5Dataset('small_fastmri_pd_3t/val.h5', transform)
+train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=42, num_workers=12, shuffle=True)
+val_generator = torch.utils.data.DataLoader(val_dataset, batch_size=1, num_workers=12)
+
+num_blocks = 5
+for i in range(num_blocks):
+    # Train cascade block
+    trainer = get_trainer()
+    trainer.fit(cascade, train_dataloader=train_generator, val_dataloaders=val_generator)
+    # Freeze last cascade blocks
+    for param in cascade.net.parameters():
+        param.requires_grad = False
+    # Add new block to cascade
+    if i != num_blocks - 1:
+        cascade = CascadeModule(net=cascade.net.append(PureDnCNNDCModule(**model_kwargs).net), **model_kwargs)
+        # Load statedict for unet in last trainable block
+        cascade.net[-1].cascade[0].load_state_dict(torch.load('dncnn-noiseless.pth'))
+
+
+transform = FastMRITransform(
+    RandomMaskFunc([0.08], [4]),
+    noise_level=1000,
+    noise_type='none'
+)
+
+train_dataset = FastMRIh5Dataset('small_fastmri_pd_3t/train.h5', transform)
+val_dataset = FastMRIh5Dataset('small_fastmri_pd_3t/val.h5', transform)
+train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=8, num_workers=12, shuffle=True)
+val_generator = torch.utils.data.DataLoader(val_dataset, batch_size=1, num_workers=12)
+
+
+cascade = CascadeModule\
+.load_from_checkpoint('logs/CascadeDnCNN_pure/lightning_logs/version_4/checkpoints/last.ckpt',
+                      net=torch.nn.ModuleList([PureDnCNNDCModule(**model_kwargs).net for _ in range(5)]))
+
+trainer = pl.Trainer(
+    gpus=1, max_epochs=20,
+    accumulate_grad_batches=16,
+    terminate_on_nan=True,
+    default_root_dir='logs/CascadeDnCNN_pure',
+    callbacks=[
+        pl.callbacks.ModelCheckpoint(
+            save_last=True,
+            save_top_k=7,
+            monitor='val_loss',
+            filename='{epoch}-{ssim:.4f}-{psnr:.4f}-{nmse:.5f}'
+        ),
+        pl.callbacks.LearningRateMonitor(logging_interval='epoch'),
+        pl.callbacks.GPUStatsMonitor(temperature=True)
+    ]
+)
+for param in cascade.net.parameters():
+    param.requires_grad = True
+trainer.fit(cascade, train_dataloader=train_generator, val_dataloaders=val_generator)
+torch.save(cascade.net.state_dict(), 'cascade-x5-dncnn_pure-dc-noiseless.pth')
+
 #---------------gaussian------------------------
 
 transform = FastMRITransform(
@@ -63,16 +130,15 @@ transform = FastMRITransform(
 
 train_dataset = FastMRIh5Dataset('small_fastmri_pd_3t/train.h5', transform)
 val_dataset = FastMRIh5Dataset('small_fastmri_pd_3t/val.h5', transform)
-train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, num_workers=12, shuffle = True)
+train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=8, num_workers=12, shuffle = True)
 val_generator = torch.utils.data.DataLoader(val_dataset, batch_size=1, num_workers=12, shuffle = True)
 
-cascade = CascadeModule\
-.load_from_checkpoint(path, #<-----path-here
-                      net=torch.nn.ModuleList([PureDnCNNDCModule(**model_kwargs).net for _ in range(5)]))
+cascade = CascadeModule(net=torch.nn.ModuleList([PureDnCNNDCModule(**model_kwargs).net for _ in range(5)]), **model_kwargs)
+cascade.net.load_state_dict(torch.load('cascade-x5-dncnn_pure-dc-noiseless.pth'))
 
 trainer = pl.Trainer(
-    gpus=1, max_epochs=3,
-    accumulate_grad_batches=32,
+    gpus=1, max_epochs=20,
+    accumulate_grad_batches=16,
     terminate_on_nan=True,
     default_root_dir='logs/CascadeDnCNN_pure_gaussian',
     callbacks=[
@@ -103,16 +169,15 @@ transform = FastMRITransform(
 
 train_dataset = FastMRIh5Dataset('small_fastmri_pd_3t/train.h5', transform)
 val_dataset = FastMRIh5Dataset('small_fastmri_pd_3t/val.h5', transform)
-train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, num_workers=12, shuffle = True)
+train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=8, num_workers=12, shuffle = True)
 val_generator = torch.utils.data.DataLoader(val_dataset, batch_size=1, num_workers=12, shuffle = True)
 
-cascade = CascadeModule\
-.load_from_checkpoint(path, #<-----path-here
-                      net=torch.nn.ModuleList([PureDnCNNDCModule(**model_kwargs).net for _ in range(5)]))
+cascade = CascadeModule(net=torch.nn.ModuleList([PureDnCNNDCModule(**model_kwargs).net for _ in range(5)]), **model_kwargs)
+cascade.net.load_state_dict(torch.load('cascade-x5-dncnn_pure-dc-noiseless.pth'))
 
 trainer = pl.Trainer(
-    gpus=1, max_epochs=3,
-    accumulate_grad_batches=32,
+    gpus=1, max_epochs=20,
+    accumulate_grad_batches=16,
     terminate_on_nan=True,
     default_root_dir='logs/CascadeDnCNN_pure_salt',
     callbacks=[
@@ -143,16 +208,15 @@ transform = FastMRITransform(
 
 train_dataset = FastMRIh5Dataset('small_fastmri_pd_3t/train.h5', transform)
 val_dataset = FastMRIh5Dataset('small_fastmri_pd_3t/val.h5', transform)
-train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, num_workers=12, shuffle = True)
+train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=8, num_workers=12, shuffle = True)
 val_generator = torch.utils.data.DataLoader(val_dataset, batch_size=1, num_workers=12, shuffle = True)
 
-cascade = CascadeModule\
-.load_from_checkpoint(path, #<-----path-here
-                      net=torch.nn.ModuleList([PureDnCNNDCModule(**model_kwargs).net for _ in range(5)]))
+cascade = CascadeModule(net=torch.nn.ModuleList([PureDnCNNDCModule(**model_kwargs).net for _ in range(5)]), **model_kwargs)
+cascade.net.load_state_dict(torch.load('cascade-x5-dncnn_pure-dc-noiseless.pth'))
 
 trainer = pl.Trainer(
-    gpus=1, max_epochs=3,
-    accumulate_grad_batches=32,
+    gpus=1, max_epochs=20,
+    accumulate_grad_batches=16,
     terminate_on_nan=True,
     default_root_dir='logs/CascadeDnCNN_pure_salt_normal_and_salt',
     callbacks=[

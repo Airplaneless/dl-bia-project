@@ -101,4 +101,14 @@ transform = FastMRITransform(
 | [salt&pepper](https://drive.google.com/file/d/1jzMuxcEW2tOgrQ8U8VBVR8nOe8GCUJtq/view?usp=sharing)     | 0.4911      | 0.0420      | 25.9640       |
 | [gaussian + salt&pepper*](https://drive.google.com/file/d/1TuPPuht1OwfwJ_9xuikWOjHAY_xt9R8y/view?usp=sharing) | 0.4276      | 0.0693      | 24.4179       |
 
+
+**Cascade-5x-DnCNN-NoDC**
+
+| noise       | SSIM   | NMSE   | PSNR    |
+|-------------|--------|--------|---------|
+| [none](https://drive.google.com/file/d/1iUbaZcwKAAW7IE26070Yj4v6WJc5fEKr/view?usp=sharing)        | 0.7712 | 0.0154 | 29.9269 |
+| [gaussian](https://drive.google.com/file/d/1_le3Kd2jMBFXkuTC2AGUfiwtqyQJiqTU/view?usp=sharing)    | 0.6601      | 0.0227      | 28.3064       |
+| [salt&pepper](https://drive.google.com/file/d/1MZM0I9Njqq6embB8x4bHEZ27Y2ikpXPO/view?usp=sharing)     | 0.4276      | 0.0654      | 23.9284       |
+| [gaussian + salt&pepper*](https://drive.google.com/file/d/1MBrILGhitdZQzmDk0gbES7HvaEnb7baL/view?usp=sharing) | 0.4551      | 0.0717      | 23.9338       |
+
     * - need revision
