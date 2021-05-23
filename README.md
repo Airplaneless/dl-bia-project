@@ -71,8 +71,9 @@ transform = FastMRITransform(
 |-------------|--------|--------|---------|
 | [none](https://drive.google.com/file/d/13FaJ5itN6OkYoxY_qGy4eyZFwI0YnuL5/view?usp=sharing) | 0.8508 | 0.0064 | 33.8926 |
 | [gaussian](https://drive.google.com/file/d/13oQoujDBUKqoMfVRb-vV0eSsiv5gFGQP/view?usp=sharing) | 0.6747 | 0.0171 | 29.8601|
-| [salt&pepper](https://drive.google.com/file/d/1BdK1YxZZvAOA87_-cSbpEFKK4Km3JGL1/view?usp=sharing) | 0.3387 | 0.2147 | 19.9232|
-| [gaussian + salt&pepper](https://drive.google.com/file/d/14pfC-UPdGSBeHl0O9C_ezKgrMsQzxpB1/view?usp=sharing) | 0.2887 | 0.2894 | 18.8754|
+| [salt&pepper](https://drive.google.com/file/d/1D8kk67tjO2lbBPv6xprYTJLqsHi1BlyA/view?usp=sharing)  | 0.3862 | 0.1945 | 21.1475|
+| [gaussian + salt&pepper](https://drive.google.com/file/d/14w64gbtbXxab3ad8kMY-tkR8CoEp26ZL/view?usp=sharing) | 0.2580 | 0.3408 | 18.0605|
+
 
 **DnCNN**
 
