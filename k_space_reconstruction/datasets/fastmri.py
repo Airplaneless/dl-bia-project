@@ -48,7 +48,7 @@ class FastMRITransformC(object):
         # Noise lvls are hardcoded
       
         elif self.noise_type == 'normal_and_salt':
-            normal_noise_lvl = 400
+            normal_noise_lvl = 100
             salt_noise_lvl = 5e4
             ks_mean = ks.mean()
             # Add Gaussian
