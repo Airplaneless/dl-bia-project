@@ -55,6 +55,15 @@ transform = FastMRITransform(
 | [salt&pepper](https://drive.google.com/file/d/1DhFYzpAnX25jQwMe78l_P17yfvcWdXJx/view?usp=sharing)     | 0.6806 | 0.0207 | 28.9547 |
 | [gaussian + salt&pepper](https://drive.google.com/file/d/1puD_V3z87IXsFCqQiiNroeFrI5x1owlI/view?usp=sharing) | 0.6807 | 0.0189 | 28.2086 |
 
+**Attention-Unet16**
+
+| noise       | SSIM   | NMSE   | PSNR    |
+|-------------|--------|--------|---------|
+| [none](https://drive.google.com/file/d/1pOzpSr4T-VBF50puf0fbdC_0FQSJDSrZ/view?usp=sharing)        | 0.4939 | 0.2021 | 18.6097 |
+| [gaussian]()    | 0.4426 | 0.2127 | 18.3985 |
+| [salt&pepper]()     | 0.6806 | 0.0207 | 28.9547 |
+| [gaussian + salt&pepper]() | 0.6807 | 0.0189 | 28.2086 |
+
 **Cascade-5x-Unet16-noDC**
 
 | noise       | SSIM   | NMSE   | PSNR    |
