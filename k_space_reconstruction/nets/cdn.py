@@ -16,6 +16,7 @@ from k_space_reconstruction.nets.kunet import KUnet
 from k_space_reconstruction.nets.mwcnn import MWCNN
 from k_space_reconstruction.nets.unet import Unet
 from k_space_reconstruction.nets.cddn import DataConsistencyModule, DataConsistencyLLearnableModule
+from k_space_reconstruction.nets.cddn import DLAFModule, DCSuperAFModule
 
 
 class ComplexModule(BaseReconstructionModule):
@@ -126,6 +127,22 @@ class UnetDCLModule(BaseReconstructionModule):
     def get_net(self, **kwargs):
         return UnetDCLCascade(kwargs['unet_chans'], kwargs['unet_num_layers'])
 
+class UnetDCsuperAFModule(BaseReconstructionModule):
+
+    def __init__(self, **kwargs):
+        super(UnetDCsuperAFModule, self).__init__(**kwargs)
+
+    def get_net(self, **kwargs):
+        return UnetDCsuperAFCascade(kwargs['unet_chans'], kwargs['unet_num_layers'])
+
+class UnetDCAFModule(BaseReconstructionModule):
+
+    def __init__(self, **kwargs):
+        super(UnetDCAFModule, self).__init__(**kwargs)
+
+    def get_net(self, **kwargs):
+        return UnetDCAFCascade(kwargs['unet_chans'], kwargs['unet_num_layers'])
+
 class MWCCNDCModule(BaseReconstructionModule):
 
     def __init__(self, **kwargs):
@@ -174,6 +191,37 @@ class UnetDCCascade(torch.nn.Module):
             else:
                 x = module(x)
         return x
+
+
+class UnetDCsuperAFCascade(torch.nn.Module):
+
+    def __init__(self, n_filters, num_layers):
+        super().__init__()
+        self.cascade = torch.nn.ModuleList([Unet(1, 1, n_filters, num_layers), DCSuperAFModule()])
+
+    def forward(self, k, m, x, mean, std):
+        for module in self.cascade:
+            if (type(module) == DCSuperAFModule):
+                x = module(k, m, x, mean, std)
+            else:
+                x = module(x)
+        return x
+
+
+class UnetDCAFCascade(torch.nn.Module):
+
+    def __init__(self, n_filters, num_layers):
+        super().__init__()
+        self.cascade = torch.nn.ModuleList([Unet(1, 1, n_filters, num_layers), DLAFModule()])
+
+    def forward(self, k, m, x, mean, std):
+        for module in self.cascade:
+            if (type(module) == DLAFModule):
+                x = module(k, m, x, mean, std)
+            else:
+                x = module(x)
+        return x
+
 
 class UnetDCLCascade(torch.nn.Module):
 

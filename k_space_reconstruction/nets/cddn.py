@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from k_space_reconstruction.nets.base import BaseReconstructionModule
 from k_space_reconstruction.utils.kspace import pt_kspace2spatial as FtH
 from k_space_reconstruction.utils.kspace import pt_spatial2kspace as Ft
+from k_space_reconstruction.nets.unet import Unet
 
 
 PADDING_MODE = 'zeros'
@@ -107,6 +108,68 @@ class DataConsistencyLLearnableModule(nn.Module):
     def forward(self, k, m, x, mean, std):
         ks = Ft(x*std + mean)
         k = k[:, :1] + 1j * k[:, 1:]
+        x = FtH((1 - m) * ks + m * (ks + self.ll * k) / (1 + self.ll)).abs()
+        return (x - mean) / (std + 1e-11)
+
+
+class ActiveFilter(nn.Module):
+
+    def __init__(self, img_shape):
+        super(ActiveFilter, self).__init__()
+        self.w_1 = nn.Parameter(data=torch.ones(img_shape))
+        self.w_2 = nn.Parameter(data=torch.ones(img_shape))
+        self.b_1 = nn.Parameter(data=torch.zeros(img_shape))
+        self.b_2 = nn.Parameter(data=torch.zeros(img_shape))
+
+    def forward(self, ks):
+        x = F.leaky_relu(F.leaky_relu(self.w_1) * ks.abs() + F.leaky_relu(self.b_1))
+        x = F.leaky_relu(self.w_2) * x + F.leaky_relu(self.b_2)
+        return ks * x.abs() / (ks.abs() + 1e-11)
+
+
+class SuperActiveFilter(nn.Module):
+
+    def __init__(self):
+        super(SuperActiveFilter, self).__init__()
+        self.net = Unet(1, 1, 8, 4)
+
+    def forward(self, ks):
+        ksm = ks.abs()
+        mean = ksm.mean()
+        std = ksm.std()
+        ksm = (ksm - mean) / (std + 1e-11)
+        x = self.net(ksm).sigmoid()
+        return ks * x
+
+
+class DCSuperAFModule(nn.Module):
+
+    def __init__(self):
+        super(DCSuperAFModule, self).__init__()
+        self.ll = nn.Parameter(data=torch.tensor(1.0), requires_grad=True)
+        self.al = SuperActiveFilter()
+
+    def forward(self, k, m, x, mean, std):
+        ks = Ft(x*std + mean)
+        k = k[:, :1] + 1j * k[:, 1:]
+        k = self.al(k)
+        x = FtH((1 - m) * ks + m * (ks + self.ll * k) / (1 + self.ll)).abs()
+        return (x - mean) / (std + 1e-11)
+
+
+class DLAFModule(nn.Module):
+
+    def __init__(self):
+        super(DLAFModule, self).__init__()
+        self.ll = nn.Parameter(data=torch.tensor(1.0), requires_grad=True)
+        self.al1 = ActiveFilter([1, 320, 320])
+        self.al2 = ActiveFilter([1, 320, 320])
+
+    def forward(self, k, m, x, mean, std):
+        ks = Ft(x*std + mean)
+        k = k[:, :1] + 1j * k[:, 1:]
+        ks = self.al1(ks)
+        k = self.al2(k)
         x = FtH((1 - m) * ks + m * (ks + self.ll * k) / (1 + self.ll)).abs()
         return (x - mean) / (std + 1e-11)
 
