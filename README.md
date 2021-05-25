@@ -62,7 +62,7 @@ transform = FastMRITransform(
 | [none](https://drive.google.com/file/d/1AqLmq6SaPaKAfNlGKEdPvJezkU3Kuevx/view?usp=sharing)        | 0.8013 | 0.0097 | 31.9888 |
 | [gaussian](https://drive.google.com/file/d/1dXDukIDxyvq1iwCX6xIwx4IzHKSaHD0v/view?usp=sharing) | 0.7058 | 0.0151 | 30.0426 |
 | [salt&pepper](https://drive.google.com/file/d/1iLYBxanMpz9wghbt5zlI_6pz0XA_cak6/view?usp=sharing) | 0.6169 | 0.0394 | 26.5311 |
-| [gaussian + salt&pepper]()  | 0.5892 | 0.03026 | 27.8198|
+| [gaussian + salt&pepper](https://drive.google.com/file/d/1cme5Fu4kfNa9ZywifJ-VpI28q9gwEWIE/view?usp=sharing)  | 0.6086 | 0.0574 | 25.8732|
 
 **Cascade-5x-Unet16-DCL**
 
