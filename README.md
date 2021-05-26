@@ -111,6 +111,15 @@ transform = FastMRITransform(
 | [salt&pepper](https://drive.google.com/file/d/1LDYte3YX8U2krChCMO9F4QtUiUhO6d2z/view?usp=sharing)               | 0.8347 | 0.0082 | 32.8732 |
 | [gaussian + salt&pepper](https://drive.google.com/file/d/12ZJL3v_GF7GHRMk6AH5Vye2J0XZMkPki/view?usp=sharing)    | 0.7359 | 0.0133 | 30.7945 |
 
+**Cascade-5x-Unet16-TDC-FtF-Super-AF**
+
+| noise       | SSIM   | NMSE   | PSNR    |
+|-------------|--------|--------|---------|
+| [none](https://drive.google.com/file/d/1zLIq5bgpOF6zRgqQpVQkGVF-RESif_i3/view?usp=sharing)                      | 0.8509 | 0.0063 | 33.9353 |
+| [gaussian](https://drive.google.com/file/d/107VN5R7Rp8SKlVRmXpTjeReN_7N3YWEf/view?usp=sharing)                  | 0.7510 | 0.0109 | 31.5610 |
+| [salt&pepper](https://drive.google.com/file/d/1oHgDpLLt53PuWLI3qnScAt7M3X0roMpw/view?usp=sharing)               | 0.8437 | 0.0071 | 33.4054 |
+| [gaussian + salt&pepper](https://drive.google.com/file/d/1aJqQl8hSD0rZtZySOuGoO8aBuMJmZZ7y/view?usp=sharing)    | 0.7361 | 0.0121 | 31.1309 |
+
 **DnCNN**
 
 | noise       | SSIM   | NMSE   | PSNR    |

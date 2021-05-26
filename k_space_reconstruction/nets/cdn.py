@@ -16,7 +16,7 @@ from k_space_reconstruction.nets.kunet import KUnet
 from k_space_reconstruction.nets.mwcnn import MWCNN
 from k_space_reconstruction.nets.unet import Unet
 from k_space_reconstruction.nets.cddn import DataConsistencyModule, DataConsistencyLLearnableModule
-from k_space_reconstruction.nets.cddn import DLAFModule, DCSuperAFModule
+from k_space_reconstruction.nets.cddn import DLAFModule, DCSuperAFModule, DCSuperAFModuleV2, DCSuperAFModuleV3, DCSuperAFModuleV4
 
 
 class ComplexModule(BaseReconstructionModule):
@@ -135,6 +135,30 @@ class UnetDCsuperAFModule(BaseReconstructionModule):
     def get_net(self, **kwargs):
         return UnetDCsuperAFCascade(kwargs['unet_chans'], kwargs['unet_num_layers'])
 
+class UnetDCsuperAFV2Module(BaseReconstructionModule):
+
+    def __init__(self, **kwargs):
+        super(UnetDCsuperAFV2Module, self).__init__(**kwargs)
+
+    def get_net(self, **kwargs):
+        return UnetDCsuperAFV2Cascade(kwargs['unet_chans'], kwargs['unet_num_layers'])
+
+class UnetDCsuperAFV3Module(BaseReconstructionModule):
+
+    def __init__(self, **kwargs):
+        super(UnetDCsuperAFV3Module, self).__init__(**kwargs)
+
+    def get_net(self, **kwargs):
+        return UnetDCsuperAFV3Cascade(kwargs['unet_chans'], kwargs['unet_num_layers'])
+
+class UnetDCsuperAFV4Module(BaseReconstructionModule):
+
+    def __init__(self, **kwargs):
+        super(UnetDCsuperAFV4Module, self).__init__(**kwargs)
+
+    def get_net(self, **kwargs):
+        return UnetDCsuperAFV4Cascade(kwargs['unet_chans'], kwargs['unet_num_layers'])
+
 class UnetDCAFModule(BaseReconstructionModule):
 
     def __init__(self, **kwargs):
@@ -202,6 +226,51 @@ class UnetDCsuperAFCascade(torch.nn.Module):
     def forward(self, k, m, x, mean, std):
         for module in self.cascade:
             if (type(module) == DCSuperAFModule):
+                x = module(k, m, x, mean, std)
+            else:
+                x = module(x)
+        return x
+
+
+class UnetDCsuperAFV2Cascade(torch.nn.Module):
+
+    def __init__(self, n_filters, num_layers):
+        super().__init__()
+        self.cascade = torch.nn.ModuleList([Unet(1, 1, n_filters, num_layers), DCSuperAFModuleV2()])
+
+    def forward(self, k, m, x, mean, std):
+        for module in self.cascade:
+            if (type(module) == DCSuperAFModuleV2):
+                x = module(k, m, x, mean, std)
+            else:
+                x = module(x)
+        return x
+
+
+class UnetDCsuperAFV3Cascade(torch.nn.Module):
+
+    def __init__(self, n_filters, num_layers):
+        super().__init__()
+        self.cascade = torch.nn.ModuleList([Unet(1, 1, n_filters, num_layers), DCSuperAFModuleV3()])
+
+    def forward(self, k, m, x, mean, std):
+        for module in self.cascade:
+            if (type(module) == DCSuperAFModuleV3):
+                x = module(k, m, x, mean, std)
+            else:
+                x = module(x)
+        return x
+
+
+class UnetDCsuperAFV4Cascade(torch.nn.Module):
+
+    def __init__(self, n_filters, num_layers):
+        super().__init__()
+        self.cascade = torch.nn.ModuleList([Unet(1, 1, n_filters, num_layers), DCSuperAFModuleV4()])
+
+    def forward(self, k, m, x, mean, std):
+        for module in self.cascade:
+            if (type(module) == DCSuperAFModuleV4):
                 x = module(k, m, x, mean, std)
             else:
                 x = module(x)

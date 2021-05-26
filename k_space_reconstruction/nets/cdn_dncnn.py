@@ -17,7 +17,7 @@ from k_space_reconstruction.utils.kspace import pt_kspace2spatial as FtH
 from k_space_reconstruction.utils.kspace import pt_spatial2kspace as Ft
 from k_space_reconstruction.nets.base import BaseReconstructionModule
 
-from k_space_reconstruction.nets.cddn import DataConsistencyModule, DataConsistencyLLearnableModule
+from k_space_reconstruction.nets.cddn import DataConsistencyModule, DataConsistencyLLearnableModule, DCSuperAFModuleV2
 
 
 class CascadeModule(BaseReconstructionModule):
@@ -62,6 +62,15 @@ class DnCNNDCLModule(BaseReconstructionModule):
         return DnCNNDCLCascade(kwargs['dncnn_chans'], kwargs['dncnn_depth'])
 
 
+class DnCNNDCsuperAFV2(BaseReconstructionModule):
+
+    def __init__(self, **kwargs):
+        super(DnCNNDCsuperAFV2, self).__init__(**kwargs)
+
+    def get_net(self, **kwargs):
+        return DnCNNDCsuperAFV2Cascade(kwargs['dncnn_chans'], kwargs['dncnn_depth'])
+
+
 class DnCNNDCLCascade(torch.nn.Module):
 
     def __init__(self, n_filters, num_layers): # dncnn_chans, dncnn_depth
@@ -71,6 +80,21 @@ class DnCNNDCLCascade(torch.nn.Module):
     def forward(self, k, m, x, mean, std):
         for module in self.cascade:
             if type(module) == DataConsistencyLLearnableModule:
+                x = module(k, m, x, mean, std)
+            else:
+                x = module(x)
+        return x
+
+
+class DnCNNDCsuperAFV2Cascade(torch.nn.Module):
+
+    def __init__(self, n_filters, num_layers): # dncnn_chans, dncnn_depth
+        super().__init__()
+        self.cascade = torch.nn.ModuleList([DnCNN(1, 1, n_filters, num_layers), DCSuperAFModuleV2()])
+
+    def forward(self, k, m, x, mean, std):
+        for module in self.cascade:
+            if type(module) == DCSuperAFModuleV2:
                 x = module(k, m, x, mean, std)
             else:
                 x = module(x)

@@ -5,6 +5,7 @@ from k_space_reconstruction.nets.base import BaseReconstructionModule
 from k_space_reconstruction.utils.kspace import pt_kspace2spatial as FtH
 from k_space_reconstruction.utils.kspace import pt_spatial2kspace as Ft
 from k_space_reconstruction.nets.unet import Unet
+from k_space_reconstruction.nets.dncnn import DnCNN
 
 
 PADDING_MODE = 'zeros'
@@ -153,6 +154,55 @@ class DCSuperAFModule(nn.Module):
         ks = Ft(x*std + mean)
         k = k[:, :1] + 1j * k[:, 1:]
         k = self.al(k)
+        x = FtH((1 - m) * ks + m * (ks + self.ll * k) / (1 + self.ll)).abs()
+        return (x - mean) / (std + 1e-11)
+
+
+class DCSuperAFModuleV2(nn.Module):
+
+    def __init__(self):
+        super(DCSuperAFModuleV2, self).__init__()
+        self.ll = nn.Parameter(data=torch.tensor(1.0), requires_grad=True)
+        self.al1 = SuperActiveFilter()
+        self.al2 = SuperActiveFilter()
+
+    def forward(self, k, m, x, mean, std):
+        ks = Ft(x*std + mean)
+        k = k[:, :1] + 1j * k[:, 1:]
+        k = self.al1(k)
+        ks = self.al2(ks)
+        x = FtH((1 - m) * ks + m * (ks + self.ll * k) / (1 + self.ll)).abs()
+        return (x - mean) / (std + 1e-11)
+
+
+class DCSuperAFModuleV3(nn.Module):
+
+    def __init__(self):
+        super(DCSuperAFModuleV3, self).__init__()
+        self.ll = nn.Parameter(data=torch.tensor(1.0), requires_grad=True)
+        self.al = SuperActiveFilter()
+
+    def forward(self, k, m, x, mean, std):
+        ks = Ft(x*std + mean)
+        k = k[:, :1] + 1j * k[:, 1:]
+        k = self.al(Ft(FtH(k)))
+        x = FtH((1 - m) * ks + m * (ks + self.ll * k) / (1 + self.ll)).abs()
+        return (x - mean) / (std + 1e-11)
+
+
+class DCSuperAFModuleV4(nn.Module):
+
+    def __init__(self):
+        super(DCSuperAFModuleV4, self).__init__()
+        self.ll = nn.Parameter(data=torch.tensor(1.0), requires_grad=True)
+        self.al = SuperActiveFilter()
+
+    def forward(self, k, m, x, mean, std):
+        ks = Ft(x*std + mean)
+        k = k[:, :1] + 1j * k[:, 1:]
+        k = self.al(Ft(FtH(k)))
+        x = FtH((1 - m) * ks + m * (ks + self.ll * k) / (1 + self.ll)).abs()
+        ks = Ft(x)
         x = FtH((1 - m) * ks + m * (ks + self.ll * k) / (1 + self.ll)).abs()
         return (x - mean) / (std + 1e-11)
 
